@@ -1,0 +1,54 @@
+
+% insert template arguments here
+%\documentclass{article}
+\providecommand \mycount {6}
+%\providecommand \mylandscape {}
+\providecommand \mycaption {Tesztlekvár}
+
+\ifx \mylandscape \undefined
+\usepackage[margin=0cm,a4paper]{geometry}
+\else
+\usepackage[margin=0cm,a4paper,landscape]{geometry}
+\fi
+\usepackage{anyfontsize}
+\usepackage{tikz}
+\setlength{\parindent}{0cm}
+
+\def \nx {1}
+\def \ny {\mycount}
+
+\begin{document}
+\newcommand{\w}{\textwidth}
+\newcommand{\h}{\textheight}
+\begin{tikzpicture}
+\clip (0,0) rectangle (\w,\h);
+
+\ifnum \nx > 1
+\foreach \x in {1,...,\nx-1} {
+    \def \pos {\w / \nx * \x};
+    \draw (\pos, 0) -- (\pos, \h);
+}
+\fi
+\foreach \y in {1,...,\ny-1} {
+    \def \pos {\h / \ny * \y};
+    \draw (0, \pos) -- (\w, \pos);
+}
+
+\foreach \x in {0,...,\nx-1} {
+    \foreach \y in {0,...,\ny-1} {
+        \node at (\w/\nx/2 + \w/\nx*\x, \h/\ny/2 + \h/\ny*\y) {
+            \pgfmathparse{\w / \nx}
+            \parbox{\pgfmathresult pt}{
+                \centering
+                {
+                    \fontsize{1.1cm}{1cm}\selectfont
+                    \mycaption
+                } \\[0.3cm]
+                { \large \the\year }
+            }
+        };
+    }
+}
+
+\end{tikzpicture}
+\end{document}

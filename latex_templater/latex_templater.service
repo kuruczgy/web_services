@@ -1,0 +1,28 @@
+[Unit]
+Description=latex_templater - A web service for latex templates.
+
+[Service]
+Type=simple
+ExecStart=uwsgi --http-socket 127.0.0.1:5000 --plugins python \
+    --wsgi-file ./main.py
+
+DynamicUser=true
+
+UMask=027
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+DevicePolicy=closed
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictRealtime=yes
+RestrictNamespaces=yes
+MemoryDenyWriteExecute=yes
+
+[Install]
+WantedBy=multi-user.target
