@@ -3,10 +3,15 @@ Description=latex_templater - A web service for latex templates.
 
 [Service]
 Type=simple
-ExecStart=uwsgi --uwsgi-socket /run/latex_templater.sock --plugins python \
+ExecStart=uwsgi \
+    --http-socket 127.0.0.1:5000 \
+#    --uwsgi-socket /run/latex_templater/unix.sock --chmod-socket=666 \
+    --plugins python \
     --wsgi-file /usr/share/web_services/latex_templater/main.py
 
 DynamicUser=true
+RuntimeDirectory=latex_templater
+WorkingDirectory=/usr/share/web_services/latex_templater
 
 UMask=027
 
