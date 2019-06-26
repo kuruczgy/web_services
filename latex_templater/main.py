@@ -57,6 +57,13 @@ def gen_template(name, args):
     print(f"Compilation completed of {filename}, sending...")
     return filename
 
+@app.after_request
+def after_request(response):
+    if str(request.path).startswith('/latex'):
+        response.headers['Content-Disposition'] = ('attachment; ' +
+            'filename="befott.pdf"')
+    return response
+
 @app.route('/')
 def index():
     return send_file("./index.html")
