@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, make_response
 import tempfile
 import os
 import subprocess
@@ -59,7 +59,7 @@ def gen_template(name, args):
 
 @app.after_request
 def after_request(response):
-    if str(request.path).startswith('/latex'):
+    if str(request.path).startswith('/latex') and response.status_code == 200:
         response.headers['Content-Disposition'] = ('attachment; ' +
             'filename="befott.pdf"')
     return response
@@ -73,7 +73,7 @@ def template():
     template_name = request.args.get("name")
     fn = gen_template(template_name, request.args)
     if fn is None:
-        return "An error occurred"
+        return make_response("An error occurred", 500)
     return send_file(fn)
 
 if __name__ == '__main__':

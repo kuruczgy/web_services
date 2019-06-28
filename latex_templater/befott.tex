@@ -16,6 +16,7 @@
 
 \def \nx {1}
 \def \ny {\mycount}
+\def \notch {1cm}
 
 \begin{document}
 \newcommand{\w}{\textwidth}
@@ -31,7 +32,7 @@
 \fi
 \foreach \y in {1,...,\ny-1} {
     \def \pos {\h / \ny * \y};
-    \draw (0, \pos) -- (\w, \pos);
+    \draw (0, \pos) -- (\notch, \pos) (\w-\notch,\pos) -- (\w, \pos);
 }
 
 \foreach \x in {0,...,\nx-1} {
