@@ -13,7 +13,7 @@ application = app
 def filter_alpha(s):
     return ''.join(c for c in s if str.isalpha(c) or c == ' ')
 def filter_alnum(s):
-    return ''.join(c for c in s if str.isalnum(c) or c == ' ')
+    return ''.join(c for c in s if str.isalnum(c) or c == ' ' or c == '-')
 
 def gen_template(name, args):
     items = []
