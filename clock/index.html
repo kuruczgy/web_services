@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang=en>
+<head>
+    <meta charset=utf-8>
+    <title>clock</title>
+    <script>
+        window.onload = () => {
+            let clock;
+            function init_svg()
+            {
+                let esvg = document.getElementById('svg');
+                esvg.setAttributeNS(null, 'viewBox', '0 0 100 30');
+                let svgNS = "http://www.w3.org/2000/svg";  
+                clock = document.createElementNS(svgNS,"text");
+                clock.setAttributeNS(null,"id","clock");
+                clock.setAttributeNS(null,"font-size","16");
+                clock.setAttributeNS(null,"x","50%");
+                clock.setAttributeNS(null,"y","50%");
+                esvg.appendChild(clock);
+            }
+            init_svg();
+            let format_date = () => {
+                let d = new Date();
+                let pad = s => s.toString().padStart(2, '0');
+                let sgn = n => (n <= 0 ? '' : '+') + n.toString();
+                return  {
+                    t:  pad(d.getHours()) + ":" + 
+                        pad(d.getMinutes()) + ":" + 
+                        pad(d.getSeconds()),
+                    tz: 'UTC' + sgn(d.getTimezoneOffset() / 60)
+                }
+            };
+            let status = document.getElementById('status');
+            let tick = () => {
+                setTimeout(tick, 1000);
+
+                let d = format_date();
+                clock.innerHTML = d.t;
+                status.innerHTML = d.tz;
+            };
+            tick();
+        };
+    </script>
+    <style>
+        body {
+            background: black;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-family: monospace;
+            color: white;
+            user-select: none;
+        }
+        #clock {
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: white;
+        }
+        #svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+        #status {
+            font-size: 16pt;
+        }
+    </style>
+</head>
+<body>
+    <span id=status></span>
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+</body>
+</html>
