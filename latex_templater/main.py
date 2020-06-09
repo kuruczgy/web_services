@@ -26,6 +26,7 @@ def gen_template(name, args):
 
     print(f"New request: {name} / {items}")
     latex = ("% {name}\n\\documentclass{article}\n" +
+        "\\def\\assetpath{{" + str(os.getcwd()) + "/}}\n" +
         "\n".join(f"\\def \\{k} {{{v}}}" for k,v in items) + "\n")
     m = hashlib.sha256()
     m.update(latex.encode('utf-8'))

@@ -3,7 +3,9 @@
 %\documentclass{article}
 \providecommand \mycount {6}
 %\providecommand \mylandscape {}
+%\providecommand \myfancycorner {}
 \providecommand \mycaption {Tesztlekvár}
+
 
 \ifx \mylandscape \undefined
 \usepackage[margin=0cm,a4paper]{geometry}
@@ -13,6 +15,7 @@
 \usepackage{anyfontsize}
 \usepackage{tikz}
 \setlength{\parindent}{0cm}
+\graphicspath{{\detokenize\assetpath}}
 
 \def \nx {1}
 \def \ny {\mycount}
@@ -21,6 +24,23 @@
 \begin{document}
 \newcommand{\w}{\textwidth}
 \newcommand{\h}{\textheight}
+
+\newsavebox{\temp}
+\savebox{\temp}{
+    \begin{tabular}{c}
+        {
+            \fontsize{1.1cm}{1cm}\selectfont
+            \mycaption
+        } \\[0.3cm]
+        { \large \the\year }
+    \end{tabular}
+}
+\newlength{\myww}
+\settowidth{\myww}{\usebox{\temp}}
+\newlength{\myhh}
+\settoheight{\myhh}{\usebox{\temp}}
+\def \corner {\includegraphics[height=1.5\myhh]{corner.png}}
+
 \begin{tikzpicture}
 \clip (0,0) rectangle (\w,\h);
 
@@ -37,17 +57,19 @@
 
 \foreach \x [parse=true] in {0,...,\nx-1} {
     \foreach \y [parse=true] in {0,...,\ny-1} {
-        \node at (\w/\nx/2 + \w/\nx*\x, \h/\ny/2 + \h/\ny*\y) {
-            \pgfmathparse{\w / \nx}
-            \parbox{\pgfmathresult pt}{
-                \centering
-                {
-                    \fontsize{1.1cm}{1cm}\selectfont
-                    \mycaption
-                } \\[0.3cm]
-                { \large \the\year }
-            }
-        };
+        \def \posx {\w/\nx/2 + \w/\nx*\x}
+        \def \posy {\h/\ny/2 + \h/\ny*\y}
+        \node at (\posx, \posy) {\usebox{\temp}};
+        \def \dx {\myww / 2}
+        \def \dy {\myhh}
+        \ifx \myfancycorner \undefined
+            % nothing
+        \else
+            \node at (\posx - \dx, \posy + \dy) {\corner};
+            \node [yscale=-1] at (\posx - \dx, \posy - \dy) {\corner};
+            \node [xscale=-1,yscale=-1] at (\posx + \dx, \posy - \dy) {\corner};
+            \node [xscale=-1] at (\posx + \dx, \posy + \dy) {\corner};
+        \fi
     }
 }
 
