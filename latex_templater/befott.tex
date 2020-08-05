@@ -5,7 +5,7 @@
 %\providecommand \mylandscape {}
 %\providecommand \myfancycorner {}
 \providecommand \mycaption {Tesztlekvár}
-
+\providecommand \mystrdetails {}
 
 \ifx \mylandscape \undefined
 \usepackage[margin=0cm,a4paper]{geometry}
@@ -32,7 +32,8 @@
             \fontsize{1.1cm}{1cm}\selectfont
             \mycaption
         } \\[0.3cm]
-        { \large \the\year }
+        { \large \the\year } \\
+        \mystrdetails
     \end{tabular}
 }
 \newlength{\myww}

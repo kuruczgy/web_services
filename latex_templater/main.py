@@ -15,13 +15,25 @@ def filter_alpha(s):
 def filter_alnum(s):
     return ''.join(c for c in s if str.isalnum(c) or c == ' ' or c == '-')
 
+def filter_latex_multiline(s):
+    return (
+        ''.join(c for c in s if str.isalnum(c) or c in ' -%!.()=+\n')
+        .replace("%", "\\%")
+        .replace("\n", " \\\\\n")
+    )
+
 def gen_template(name, args):
     items = []
     name = filter_alpha(name)
     for k, v in args.items():
         if not k.startswith("my"): continue
         if not v: continue #empty
-        items.append((filter_alpha(k), filter_alnum(v)))
+
+        san_k = filter_alpha(k)
+        if san_k.startswith("mystr"):
+            items.append((san_k, filter_latex_multiline(v)))
+        else:
+            items.append((san_k, filter_alnum(v)))
     items.sort()
 
     print(f"New request: {name} / {items}")
