@@ -1,0 +1,50 @@
+
+% insert template arguments here
+% \documentclass{article}
+
+\providecommand \mynamea {Nevem}
+\providecommand \mynameb {Szobatárs 1}
+\providecommand \mynamec {Szobatárs 2}
+\providecommand \mynamed {Szobatrás 3}
+\providecommand \myneptuna {N3PTUN}
+\providecommand \mytype {FLX 88}
+\providecommand \mywhat {fluxuskondenzátor}
+\providecommand \myroom {1234}
+
+\usepackage[margin=1.5cm,a4paper]{geometry}
+\usepackage[magyar]{babel}
+\usepackage[none]{hyphenat}
+
+\setlength{\parindent}{0cm}
+
+\pagestyle{empty}
+\begin{document}
+
+\Large
+
+\hfil {\Huge Eszközbeviteli engedély} \hfil \\
+
+Alulírott engedélyezem, hogy {\bf \mynamea} (neptunkód: {\bf \myneptuna}) egy
+{\bf \mytype} típusú / azonosítóval rendelkező {\bf \mywhat}-t bevigyen a
+Schönherz Kollégium {\bf \myroom} számú szobájába. \\
+
+Szobatársként az eszköz szobánkban történő elhelyezéséhez hozzájárulok
+\begin{center}
+	\def\arraystretch{2.5}
+	\begin{tabular}{p{8cm} p{8cm}}
+		\hfil Név & \hfil Aláírás \\
+		{\bf \mynameb} & \underline{\makebox[8cm]{}} \\
+		{\bf \mynamec} & \underline{\makebox[8cm]{}} \\
+		{\bf \mynamed} & \underline{\makebox[8cm]{}} \\
+	\end{tabular}
+\end{center}
+\vspace{0.8cm}
+
+Budapest, \today \\[0.8cm]
+
+\hfill \parbox{8cm}{
+	\hrulefill \\
+	\centering Hallgatói Szolgáltatások Igazgatóság
+}
+
+\end{document}

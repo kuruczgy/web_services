@@ -54,7 +54,7 @@ def gen_template(name, args):
     latex_file = os.path.join(tmp, "latex.tex")
     with open(latex_file, 'w') as f:
         f.write(latex)
-    
+
     try:
         res = subprocess.call(['pdflatex', '-halt-on-error',
             '-output-directory', tmp, latex_file], timeout = 3)
@@ -74,12 +74,16 @@ def gen_template(name, args):
 def after_request(response):
     if str(request.path).startswith('/latex') and response.status_code == 200:
         response.headers['Content-Disposition'] = ('attachment; ' +
-            'filename="befott.pdf"')
+            'filename="result.pdf"')
     return response
 
 @app.route('/')
 def index():
     return send_file("./index.html")
+
+@app.route('/schbeviteli')
+def schbeviteli():
+    return send_file("./schbeviteli.html")
 
 @app.route('/latex')
 def template():
