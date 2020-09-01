@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Befőtt generátor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <form action="latex" target="_blank">
+        <input type="hidden" name="name" value="befott">
+        <main>
+            <div class="container befott">
+                <h3>Befőtt generátor</h3>
+                <div>
+                    <label for="description"> Szöveg:</label>
+                    <input type="text" name="mycaption">
+                </div>
+                <div>
+                    <label for="description"> Leírás:</label>
+                    <textarea name="mystrdetails" cols="20"></textarea>
+                </div>
+                <div>
+                    <label for="description"> Fekvő:</label>
+                    <input type="checkbox" name="mylandscape">
+                </div>
+                <div>
+                    <label for="description"> Darab:</label>
+                    <input type="text" name="mycount">
+                </div>
+                <div>
+                    <label for="description"> Sarok dísz:</label>
+                    <input type="checkbox" name="myfancycorner" checked>
+                </div>
+            </div>
+        </main>
+        <input type="submit" value="Generálás" class="generate befott__button">
+    </form>
+</body>
+
+</html>

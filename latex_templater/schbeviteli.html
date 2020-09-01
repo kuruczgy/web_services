@@ -1,36 +1,61 @@
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>SCH beviteli engedély generátor</title>
-    </head>
-    <body>
-        <form action="latex" target="_blank">
-            <input type="hidden" name="name" value="sch_beviteli">
 
-            Nevem:
-            <input type="text" name="mynamea"> <br>
-            Neptun:
-            <input type="text" name="myneptuna"> <br>
-            Szobaszám:
-            <input type="text" name="myroom"> <br>
-	    <hr>
+<head>
+    <meta charset="utf-8" />
+    <title>SCH beviteli engedély generátor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css" />
+</head>
 
-            Szobatárs 1:
-            <input type="text" name="mynameb"> <br>
-            Szobatárs 2:
-            <input type="text" name="mynamec"> <br>
-            Szobatárs 3:
-            <input type="text" name="mynamed"> <br>
-	    <hr>
+<body>
+    <form action="latex" target="_blank">
+        <input type="hidden" name="name" value="sch_beviteli" />
+        <main>
+            <div class="container">
+                <h3>Saját adatok</h3>
+                <div>
+                    <label for=name">Nevem:</label>
+                    <input type="text" name="mynamea" />
+                </div>
+                <div>
+                    <label for="neptun">Neptun:</label>
+                    <input type="text" name="myneptuna" />
+                </div>
+                <div>
+                    <label for="roomNumber">Szobaszám:</label>
+                    <input type="text" name="myroom" />
+                </div>
+            </div>
+            <div class="container">
+                <h3>Szobatársak nevei</h3>
+                <div>
+                    <label for="roomMate1">Szobatárs 1:</label>
+                    <input type="text" name="mynameb" />
+                </div>
+                <div>
+                    <label for="roomMate2">Szobatárs 2:</label>
+                    <input type="text" name="mynamec" />
+                </div>
+                <div>
+                    <label for="roomMate3">Szobatárs 3:</label>
+                    <input type="text" name="mynamed" />
+                </div>
+            </div>
+            <div class="container">
+                <h3>Eszköz adatai</h3>
+                <div>
+                    <label for="deviceType">Eszköz típus/azonosító:</label>
+                    <input type="text" name="mytype" />
+                </div>
+                <div>
+                    <label for="deviceName">Eszköz megnevezése:</label>
+                    <input type="text" name="mywhat" />
+                </div>
+            </div>
+        </main>
+        <input type="submit" value="Generálás" class="generate" />
+    </form>
+</body>
 
-            Eszköz típus/azonosító:
-            <input type="text" name="mytype"> <br>
-            Eszköz megnevezése:
-            <input type="text" name="mywhat"> <br>
-
-            <input type="submit" value="Generálás"> <br>
-        </form>
-    </body>
 </html>

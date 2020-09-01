@@ -78,12 +78,16 @@ def after_request(response):
     return response
 
 @app.route('/')
-def index():
-    return send_file("./index.html")
+def befott():
+    return send_file("./befott.html")
 
 @app.route('/schbeviteli')
 def schbeviteli():
     return send_file("./schbeviteli.html")
+
+@app.route('/style.css')
+def style_css():
+    return send_file("./style.css")
 
 @app.route('/latex')
 def template():
