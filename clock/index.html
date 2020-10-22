@@ -6,11 +6,10 @@
     <script>
         window.onload = () => {
             let clock;
-            function init_svg()
-            {
+            function init_svg() {
                 let esvg = document.getElementById('svg');
                 esvg.setAttributeNS(null, 'viewBox', '0 0 100 30');
-                let svgNS = "http://www.w3.org/2000/svg";  
+                let svgNS = "http://www.w3.org/2000/svg";
                 clock = document.createElementNS(svgNS,"text");
                 clock.setAttributeNS(null,"id","clock");
                 clock.setAttributeNS(null,"font-size","16");
@@ -24,10 +23,10 @@
                 let pad = s => s.toString().padStart(2, '0');
                 let sgn = n => (n <= 0 ? '' : '+') + n.toString();
                 return  {
-                    t:  pad(d.getHours()) + ":" + 
-                        pad(d.getMinutes()) + ":" + 
+                    t:  pad(d.getHours()) + ":" +
+                        pad(d.getMinutes()) + ":" +
                         pad(d.getSeconds()),
-                    tz: 'UTC' + sgn(d.getTimezoneOffset() / 60)
+                    tz: 'UTC' + sgn(-d.getTimezoneOffset() / 60)
                 }
             };
             let status = document.getElementById('status');
