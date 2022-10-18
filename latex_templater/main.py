@@ -23,6 +23,7 @@ def filter_latex_multiline(s):
     )
 
 def gen_template(name, args):
+    global temp_store
     items = []
     name = filter_alpha(name)
     for k, v in args.items():
@@ -47,25 +48,27 @@ def gen_template(name, args):
         print(f"Sending cached response {filename}")
         return filename
 
-    tmp = tempfile.mkdtemp()
-    print(f"Compiling... temp dir: {tmp}");
-    with open(f"./{name}.tex", 'r') as f:
-        latex += f.read()
-    latex_file = os.path.join(tmp, "latex.tex")
-    with open(latex_file, 'w') as f:
-        f.write(latex)
+    with tempfile.TemporaryDirectory() as tmp:
+        print(f"Compiling... temp dir: {tmp}")
+        with open(f"./{name}.tex", 'r') as f:
+            latex += f.read()
+        latex_file = os.path.join(tmp, "latex.tex")
+        with open(latex_file, 'w') as f:
+            f.write(latex)
 
-    try:
-        res = subprocess.call(['pdflatex', '-halt-on-error',
-            '-output-directory', tmp, latex_file], timeout = 3)
-        if res != 0: return None
-    except Exception:
-        return None
+        try:
+            res = subprocess.call(['pdflatex', '-halt-on-error',
+                '-output-directory', tmp, latex_file], timeout = 3)
+            if res != 0: return None
+        except Exception:
+            return None
 
-    os.rename(os.path.join(tmp, "latex.pdf"), filename)
-
-    for f in os.listdir(tmp): os.remove(os.path.join(tmp, f))
-    os.rmdir(tmp)
+        if not os.path.isdir(temp_store):
+            # For some reason sometimes `temp_store` just disappears. This
+            # should be debugged properly sometime, but for now let's just
+            # handle this gracefully and recreate it.
+            temp_store = tempfile.mkdtemp()
+        os.rename(os.path.join(tmp, "latex.pdf"), filename)
 
     print(f"Compilation completed of {filename}, sending...")
     return filename
