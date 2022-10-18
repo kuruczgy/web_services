@@ -1,0 +1,12 @@
+FROM docker.io/alpine:3.16
+
+RUN apk add --no-cache texlive texmf-dist texmf-dist-latexextra uwsgi-python3 py3-flask
+COPY . /app
+WORKDIR /app
+RUN adduser -D user
+USER user
+
+CMD uwsgi \
+    --http-socket 0.0.0.0:5000 \
+    --plugins python \
+    --wsgi-file main.py
