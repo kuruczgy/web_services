@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
   outputs = { self, nixpkgs }: {
     nixosModules.latex_templater = { config, lib, pkgs, ... }:
       let
@@ -96,6 +96,7 @@
                 "read" # 0
                 "write" # 1
                 "close" # 3
+                "fstat" # 5
                 "lseek" # 8
                 "rt_sigaction" # 13
                 "rt_sigprocmask" # 14
@@ -194,7 +195,7 @@
         self.nixosModules.latex_templater
         ({ config, pkgs, modulesPath, ... }: {
           imports = [ (modulesPath + "/virtualisation/qemu-vm.nix") ];
-          system.stateVersion = "23.11";
+          system.stateVersion = "24.05";
           virtualisation = {
             graphics = false;
             forwardPorts = [{ from = "host"; host.port = 5000; guest.port = 80; }];
