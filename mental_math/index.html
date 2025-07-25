@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script>
+      // utils
+      const choose_random = (items) => {
+        const sum = items.reduce((acc, v) => acc + v.weight, 0);
+        const value = sum * Math.random();
+        let at = 0;
+        for (const i of items) {
+          at += i.weight;
+          if (at >= value) return i;
+        }
+      };
+
+      // https://stackoverflow.com/a/43122214
+      const popcnt32 = (n) => {
+        n = n - ((n >> 1) & 0x55555555);
+        n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
+        return (((n + (n >> 4)) & 0xf0f0f0f) * 0x1010101) >> 24;
+      };
+
+      const rand_int_inclusive = (min, max) =>
+        Math.floor(Math.random() * (max - min + 1) + min);
+
+      const fmt = ({ value, base, digits }) => {
+        switch (base) {
+          case 2:
+            return `${value.toString(base).padStart(digits, "0")}₂`;
+          case 16:
+            return `0x${value.toString(base).padStart(digits, "0")}`;
+          case 10:
+            return value.toString(base);
+          default:
+            throw new Error(`unsupported base ${base}`);
+        }
+      };
+
+      const ops = {
+        add: {
+          symbol: "+",
+          f: (a, b) => a + b,
+        },
+        sub: {
+          symbol: "-",
+          f: (a, b) => a - b,
+        },
+        mul: {
+          symbol: "×",
+          f: (a, b) => a * b,
+        },
+      };
+
+      const binop_exercise =
+        ({ base, digits, op, timer }) =>
+        () => {
+          const max = Math.pow(base, digits) - 1;
+          const a = rand_int_inclusive(0, max),
+            b = rand_int_inclusive(0, max);
+          const answer = op.f(a, b);
+          return {
+            question: `${fmt({ value: a, base, digits })} ${op.symbol} ${fmt({ value: b, base, digits })}`,
+            answer: fmt({ value: answer, base, digits }),
+            match: (s) => Number.parseInt(s, base) === answer,
+            timer,
+          };
+        };
+
+      const corpus = [
+        {
+          weight: 1,
+          f: binop_exercise({ base: 2, digits: 4, op: ops.add, timer: 40 }),
+        },
+        {
+          weight: 1,
+          f: binop_exercise({ base: 16, digits: 2, op: ops.add, timer: 40 }),
+        },
+        {
+          weight: 1,
+          f: binop_exercise({ base: 10, digits: 2, op: ops.add, timer: 15 }),
+        },
+        {
+          weight: 1,
+          f: binop_exercise({ base: 10, digits: 2, op: ops.sub, timer: 15 }),
+        },
+        {
+          weight: 1,
+          f: binop_exercise({ base: 10, digits: 1, op: ops.mul, timer: 10 }),
+        },
+      ];
+
+      let history = Number.parseInt(window.localStorage.getItem("history"), 16);
+      let history_count = Number.parseInt(
+        window.localStorage.getItem("history_count"),
+        16
+      );
+      const update_score = () => {
+        const good_count = popcnt32(history);
+        const score = ((good_count / 32) * 100).toFixed(2) + "%";
+        document.getElementById("score").textContent = score;
+      };
+      const push_history = (v) => {
+        history = 0xffffffff & ((history << 1) | (v ? 1 : 0));
+        history_count += 1;
+
+        window.localStorage.setItem("history", history.toString(16));
+        window.localStorage.setItem(
+          "history_count",
+          history_count.toString(16)
+        );
+      };
+
+      // state
+      let state = "init";
+      let problem;
+      let timeout;
+      let timeout_id;
+
+      const advance = () => {
+        const message = document.getElementById("message");
+        const input = document.getElementById("answer");
+
+        const next_problem = () => {
+          problem = choose_random(corpus).f();
+          document.getElementById("question").textContent =
+            problem.question + " =";
+          timeout = Date.now() + problem.timer * 1000;
+          const tick = () => {
+            const time_display = document.getElementById("time_display");
+            const remaining = Math.max(0, timeout - Date.now());
+            time_display.textContent = `${(remaining / 1000).toFixed(1)}s`;
+            if (remaining === 0) {
+              advance();
+            } else {
+              timeout_id = setTimeout(tick, 100);
+            }
+          };
+          timeout_id = setTimeout(tick, 0);
+        };
+
+        clearTimeout(timeout_id);
+
+        switch (state) {
+          case "question": {
+            const correct = problem.match(input.value.trim());
+            push_history(correct);
+            update_score();
+            if (correct) {
+              message.textContent = "good!";
+              message.style.color = "green";
+              input.value = "";
+              next_problem();
+              state = "question";
+            } else {
+              message.textContent = `bad 🙁 actual answer: ${problem.answer}`;
+              message.style.color = "red";
+              input.disabled = true;
+              state = "review_answer";
+            }
+            break;
+          }
+          case "init":
+            update_score();
+          // fallthrough
+          case "review_answer": {
+            message.textContent = "";
+            input.value = "";
+            input.disabled = false;
+            input.focus();
+            next_problem();
+            state = "question";
+            break;
+          }
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", (event) => {
+        window.addEventListener("keydown", ({ key }) => {
+          if (key == "Enter") {
+            advance();
+          } else {
+            timeout = Math.min(timeout, Date.now() + 3 * 1000);
+          }
+        });
+
+        advance();
+      });
+    </script>
+
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      html {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-size: calc(6 * min(1lvw, 1lvh));
+        font-family: monospace;
+      }
+      body {
+        background-color: lightgray;
+        color: black;
+      }
+      input {
+        color: inherit;
+        font: inherit;
+        background-color: inherit;
+        border: 1px solid black;
+        outline: none;
+        max-width: 50vw;
+      }
+      #message {
+        font-size: 0.9rem;
+      }
+
+      /* positioning */
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      #status {
+        display: flex;
+        justify-content: space-between;
+      }
+      #time_display {
+        font-size: 0.8rem;
+      }
+
+      #main_container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      #question_answer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        font-size: 1rem;
+      }
+      #question {
+        grid-column: 1;
+        text-align: right;
+        padding-right: 10px;
+      }
+      #answer {
+        grid-column: 2;
+      }
+      #message {
+        justify-self: center;
+      }
+
+      #instructions {
+        align-self: center;
+        white-space: pre-line;
+        font-size: 0.5rem;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #0a0a0a;
+          color: lightgray;
+        }
+        input {
+          border: 1px solid white;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="status">
+      <span id="score"></span>
+      <span id="time_display"></span>
+    </div>
+    <div id="main_container">
+      <div id="question_answer">
+        <span id="question"></span>
+        <input id="answer" />
+      </div>
+      <span id="message"></span>
+    </div>
+    <pre id="instructions">
+        press enter to submit answer
+    </pre>
+  </body>
+</html>
