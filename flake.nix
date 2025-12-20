@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
   outputs = { self, nixpkgs }: {
     nixosModules.latex_templater = { config, lib, pkgs, ... }:
       let
@@ -31,15 +31,6 @@
           };
         };
         config = lib.mkIf cfg.enable {
-          users = {
-            # Cannot use DynamicUser: https://github.com/NixOS/nixpkgs/pull/289593
-            users.latex_templater = {
-              group = "latex_templater";
-              isSystemUser = true;
-            };
-            groups.latex_templater = { };
-          };
-
           systemd.services.latex_templater = {
             description = "Latex templater";
             path = [ texlive ];
@@ -63,8 +54,7 @@
               ProcSubset = "pid";
 
               # User/Group Identity
-              User = config.users.users."latex_templater".name;
-              Group = config.users.groups."latex_templater".name;
+              DynamicUser = true;
 
               # Capabilities
               CapabilityBoundingSet = "";
@@ -95,6 +85,7 @@
                 # Numbers are for x86-64
                 "read" # 0
                 "write" # 1
+                "open" # 2
                 "close" # 3
                 "fstat" # 5
                 "lseek" # 8
